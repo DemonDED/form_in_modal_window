@@ -13,7 +13,7 @@
       </div>
       <div id="selectProductType">
         <label for="">Product type *</label>
-        <select v-model="dataPriceSelect" name="" id="">
+        <select v-model="dataPriceSelect" name="" id="" @change="onChangeSelectedTask">
           <option v-for="item in productTypes" :key="item" :value={item}>{{ 'Product $' + item }}</option>
         </select>
       </div>
@@ -21,14 +21,14 @@
         <div>
           <label for="feat100">Additional feature for 100$</label>
           <label class="checkbox-ios">
-            <input type="checkbox" id="feat100" v-model="dataPriceCheckbox1">
+            <input type="checkbox" id="feat100" v-model="dataPriceCheckbox1" @change="onChangeChackbox1">
             <span class="checkbox-ios-switch"></span>
           </label>
         </div>
         <div>
           <label for="feat200">Additional feature for 200$</label>
           <label class="checkbox-ios">
-            <input type="checkbox" id="feat200" v-model="dataPriceCheckbox2">
+            <input type="checkbox" id="feat200" v-model="dataPriceCheckbox2" @change="onChangeChackbox2">
             <span class="checkbox-ios-switch"></span>
           </label>
         </div>
@@ -39,7 +39,7 @@
     </div>
     <div id="footerForm">
       <h3>Total price</h3>
-      <p>{{this.dataFullPrice}}</p>
+      <p>{{'$' + this.dataFullPrice}}</p>
     </div>
     <button @click.prevent="sendForm" id="sendFormBtn">Send form</button>
   </div>
@@ -62,10 +62,10 @@ export default {
         threeOption: 200,
       },
       warningCheck: false,
-      dataPriceSelect: null,
+      dataPriceSelect: 50,
       dataPriceCheckbox1: null,
       dataPriceCheckbox2: null,
-      dataFullPrice: null,
+      dataFullPrice: 0,
     }
   },
   methods: {
@@ -75,6 +75,15 @@ export default {
       if (this.dataPriceCheckbox2) {this.dataPriceCheckbox2 = 200} else {this.dataPriceCheckbox2 = 0}
       this.dataFullPrice = this.dataPriceSelect.item + this.dataPriceCheckbox1 + this.dataPriceCheckbox2
       console.log(this.dataPriceSelect.item + this.dataPriceCheckbox1 + this.dataPriceCheckbox2)
+    },
+    onChangeSelectedTask() {
+      this.dataFullPrice = this.dataPriceSelect.item;
+    },
+    onChangeChackbox1() {
+      if (this.dataPriceCheckbox1) {this.dataFullPrice += 100} else {this.dataFullPrice -= 100}
+    },
+    onChangeChackbox2() {
+      if (this.dataPriceCheckbox2) {this.dataFullPrice += 200} else {this.dataFullPrice -= 200}
     },
     handle() {
       this.$emit('show')
