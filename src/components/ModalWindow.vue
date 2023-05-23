@@ -70,10 +70,6 @@ export default {
   },
   methods: {
     sendForm() {
-      // console.log(this.dataPriceSelect + this.dataPriceCheckbox1 + this.dataPriceCheckbox2);
-      if (this.dataPriceCheckbox1) {this.dataPriceCheckbox1 = 100} else {this.dataPriceCheckbox1 = 0}
-      if (this.dataPriceCheckbox2) {this.dataPriceCheckbox2 = 200} else {this.dataPriceCheckbox2 = 0}
-      this.dataFullPrice = this.dataPriceSelect.item + this.dataPriceCheckbox1 + this.dataPriceCheckbox2
       console.log(this.dataPriceSelect.item + this.dataPriceCheckbox1 + this.dataPriceCheckbox2)
     },
     onChangeSelectedTask() {
