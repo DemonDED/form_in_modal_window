@@ -8,16 +8,16 @@
       <div id="inputBodyForm">
         <div>
           <input class="def" placeholder="First Name *" v-model="first_name" @change="onChangeInputFirst" @blur="isFirstNameTouched = true" :class="{ error: isInputFirstNameEmpty, error: sendCheckFirst}" /> 
-          <p v-if="isInputFirstNameEmpty || sendCheckFirst" class="warning">Pleace fill in first name.</p>
+          <p v-if="isInputFirstNameEmpty || sendCheckFirst" class="warning">Please fill in first name.</p>
         </div>
         <div>
           <input class="def" placeholder="Last Name *" v-model="last_name" @change="onChangeInputLast" @blur="isLastNameTouched = true" :class="{ error: isInputLastNameEmpty, error: sendCheckLast}" /> 
-          <p v-if="isInputLastNameEmpty || sendCheckLast" class="warning">Pleace fill in last name.</p>
+          <p v-if="isInputLastNameEmpty || sendCheckLast" class="warning">Please fill in last name.</p>
         </div>
         <div>
           <input class="def" placeholder="user@gmail.com *" v-model="email" @change="onChangeInputEmail" @blur="isEmailTouched = true" :class="{ error: isEmailError, error: isInputUserEmailEmpty, error: sendCheckEmail}" /> 
-          <p v-if="isEmailError" class="warning">Pleace enter a valid email address.</p>
-          <p v-if="isInputUserEmailEmpty || sendCheckEmail" class="warning">Pleace fill in email.</p>
+          <p v-if="isEmailError" class="warning">Please enter a valid email address.</p>
+          <p v-if="isInputUserEmailEmpty || sendCheckEmail" class="warning">Please fill in email.</p>
         </div>
       </div>
       <div id="selectProductType">
@@ -328,6 +328,7 @@ export default {
   }
   textarea {
     width: 100%;
+    resize: none;
   }
 
   #sendFormBtn {
