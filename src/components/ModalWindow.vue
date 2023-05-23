@@ -6,16 +6,28 @@
     </div>
     <div id="bodyForm">
       <div id="inputBodyForm">
-        <div v-for="item in placeholders" v-bind:key="item" :class="item">
-          <input :placeholder="item" :class="warningCheck"/>
-          <p v-show="false" class="warning">{{ 'Pleace fill in ' + item }}</p>
+        <div>
+          <input class="def" placeholder="First Name *" v-model="first_name" @change="onChangeInputFirst" @blur="isFirstNameTouched = true" :class="{ error: isInputFirstNameEmpty, error: sendCheckFirst}" /> 
+          <p v-if="isInputFirstNameEmpty || sendCheckFirst" class="warning">Pleace fill in first name.</p>
+        </div>
+        <div>
+          <input class="def" placeholder="Last Name *" v-model="last_name" @change="onChangeInputLast" @blur="isLastNameTouched = true" :class="{ error: isInputLastNameEmpty, error: sendCheckLast}" /> 
+          <p v-if="isInputLastNameEmpty || sendCheckLast" class="warning">Pleace fill in last name.</p>
+        </div>
+        <div>
+          <input class="def" placeholder="user@gmail.com *" v-model="email" @change="onChangeInputEmail" @blur="isEmailTouched = true" :class="{ error: isEmailError, error: isInputUserEmailEmpty, error: sendCheckEmail}" /> 
+          <p v-if="isEmailError" class="warning">Pleace enter a valid email address.</p>
+          <p v-if="isInputUserEmailEmpty || sendCheckEmail" class="warning">Pleace fill in email.</p>
         </div>
       </div>
       <div id="selectProductType">
         <label for="">Product type *</label>
-        <select v-model="dataPriceSelect" name="" id="" @change="onChangeSelectedTask">
-          <option v-for="item in productTypes" :key="item" :value={item}>{{ 'Product $' + item }}</option>
-        </select>
+        <div>
+          <select v-model="dataPriceSelect" name="" id="" @change="onChangeSelectedTask" :class="{ error: sendCheck}">
+            <option v-for="item in productTypes" :key="item" :value={item}>{{ 'Product $' + item }}</option>
+          </select>
+          <p v-if="sendCheck" class="warning">Please select product type.</p>
+        </div>
       </div>
       <div id="checkboxForm">
         <div>
@@ -34,7 +46,7 @@
         </div>
       </div>
       <div id="textareaBodyForm">
-        <textarea placeholder="Type your comment" name="" id="" cols="30" rows="10"></textarea>
+        <textarea v-model="textArea" placeholder="Type your comment" name="" id="" cols="30" rows="10"></textarea>
       </div>
     </div>
     <div id="footerForm">
@@ -46,33 +58,65 @@
 </template>
 
 <script>
+const emailCheckedRegex = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
 export default {
   name: 'HelloWorld',
   data() {
     return {
-      placeholders: {
-        firstName: 'first name *',
-        lastName: 'last name *',
-        userEmail: 'user@gmail.com *',
-      },
+      email: null,
+      isEmailTouched: false,
+      last_name: null,
+      isLastNameTouched: false,
+      first_name: null,
+      isFirstNameTouched: false,
+
       productTypes: {
         firstOption: 50,
         secondOption: 100,
         threeOption: 200,
       },
-      warningCheck: false,
+
+      textArea: null,
       dataPriceSelect: 50,
       dataPriceCheckbox1: null,
       dataPriceCheckbox2: null,
       dataFullPrice: 0,
+      sendCheck: false,
+      sendCheckFirst: false,
+      sendCheckLast: false,
+      sendCheckEmail: false,
     }
   },
   methods: {
     sendForm() {
-      console.log(this.dataPriceSelect.item + this.dataPriceCheckbox1 + this.dataPriceCheckbox2)
+      if (this.first_name && this.last_name && emailCheckedRegex.test(this.email) && this.dataPriceSelect) {
+        const sendObj = {
+          firstName: this.first_name,
+          lastName: this.last_name,
+          email: this.email,
+          productType: this.dataPriceSelect.item,
+          addFeatFor100: this.dataPriceCheckbox1,
+          addFeatFor200: this.dataPriceCheckbox2,
+          tetxtAreaData: this.textArea,
+          totalPrice: this.dataFullPrice,
+        }
+        console.log(sendObj);
+      } else {
+        this.onChangeInputFirst();
+        this.onChangeInputLast();
+        this.onChangeInputEmail();
+        this.onChangeSelectedTask();
+
+        return false;
+      }
     },
     onChangeSelectedTask() {
+      if (!this.dataPriceSelect.item) {
+        this.sendCheck = true;
+      } else {
+        this.sendCheck = false;
+      }
       this.dataFullPrice = this.dataPriceSelect.item;
     },
     onChangeChackbox1() {
@@ -81,10 +125,48 @@ export default {
     onChangeChackbox2() {
       if (this.dataPriceCheckbox2) {this.dataFullPrice += 200} else {this.dataFullPrice -= 200}
     },
+    onChangeInputFirst() {
+      if (!this.first_name) {
+        this.sendCheckFirst = true;
+      } else {
+        this.sendCheckFirst = false;
+      }
+    },
+    onChangeInputLast() {
+      if (!this.last_name) {
+        this.sendCheckLast = true;
+      } else {
+        this.sendCheckLast = false;
+      }
+    },
+    onChangeInputEmail() {
+      if (!this.email) {
+        this.sendCheckEmail = true;
+      } else {
+        this.sendCheckEmail = false;
+      }
+    },
     handle() {
       this.$emit('show')
     }
   },
+  computed: {
+    isEmailValid() {
+      return emailCheckedRegex.test(this.email);
+    },
+    isEmailError() {
+      return !this.isEmailValid && this.isEmailTouched && !this.isInputUserEmailEmpty;
+    },
+    isInputUserEmailEmpty() {
+      return !this.email && this.isEmailTouched;
+    },
+    isInputFirstNameEmpty() {
+      return !this.first_name && this.isFirstNameTouched;
+    },
+    isInputLastNameEmpty() {
+      return !this.last_name && this.isLastNameTouched;
+    },
+  }
 }
 </script>
 
@@ -116,6 +198,13 @@ export default {
   }
   #inputBodyForm > *, #selectProductType > *, #checkboxForm > * {
     margin-bottom: 2rem;
+  }
+  #selectProductType > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
   }
   #checkboxForm {
     width: 100%;
@@ -219,11 +308,14 @@ export default {
     justify-content: center;
     align-items: center;
   }
-  #inputBodyForm > div > input {
+  .def {
+    outline: 0;
+    box-shadow: none;
     width: 100%;
     height: 2.5rem;
     border: 1px solid gray;
     border-radius: 0.2rem;
+
   }
 
   select {
@@ -246,5 +338,14 @@ export default {
     cursor: pointer;
     border-radius: 1rem;
     font-size: 1.3rem;
+  }
+  .error {
+    color: red;
+    border: 1px solid red;
+    background-color: rgba(255, 85, 85, 0.281);
+  }
+  .error:focus {
+    border: 1px solid red;
+    outline:1px solid  red;
   }
 </style>
