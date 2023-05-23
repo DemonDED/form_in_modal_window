@@ -103,6 +103,7 @@ export default {
         }
         console.log(sendObj);
       } else {
+        
         this.onChangeInputFirst();
         this.onChangeInputLast();
         this.onChangeInputEmail();
@@ -116,8 +117,8 @@ export default {
         this.sendCheck = true;
       } else {
         this.sendCheck = false;
+        this.dataFullPrice = this.dataPriceSelect.item;
       }
-      this.dataFullPrice = this.dataPriceSelect.item;
     },
     onChangeChackbox1() {
       if (this.dataPriceCheckbox1) {this.dataFullPrice += 100} else {this.dataFullPrice -= 100}
