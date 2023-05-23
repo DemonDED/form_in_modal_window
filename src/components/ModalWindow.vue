@@ -2,7 +2,7 @@
   <div id="mainForm">
     <div id="headerForm">
       <h1>Title form</h1>
-      <p class="closeTab" @click="handle">Close</p>
+      <p class="closeTab" @click="handle">X</p>
     </div>
     <div id="bodyForm">
       <div id="inputBodyForm">
@@ -213,6 +213,7 @@ export default {
 
   .closeTab {
     cursor: pointer;
+    font-size: 2rem;
   }
 
 
